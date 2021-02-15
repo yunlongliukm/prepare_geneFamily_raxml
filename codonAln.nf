@@ -1,5 +1,10 @@
 #!/usr/bin/env nextflow
 
+params.cds = "cds.fasta"
+params.pep = "pep.fasta"
+
+
+
 ids = Channel.fromPath('*.id')
 
 process codonAln {
