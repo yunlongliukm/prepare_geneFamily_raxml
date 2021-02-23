@@ -1,4 +1,3 @@
-
 #!/usr/bin/env nextflow
 
 params.cds = "cds.fasta"
@@ -22,7 +21,7 @@ process codonAln {
     input:
     file geneID from ids
     output:
-    file "${ID}.p2n.fa"  into pal2nal_file
+    file "${ID}.p2n"  into pal2nal_file
     script:
     ID= geneID.getSimpleName()
     """
@@ -30,8 +29,7 @@ process codonAln {
     samtools faidx $pep \$(cat $geneID) >gene.pep
     mafft --anysymbol gene.pep > pep.aln
     pal2nal.pl pep.aln gene.cds -output fasta  -nogap -nomismatch >gene.p2n
-    cat $geneID |awk '{print \$1"\tseq"NR}' >switch.id
-    faops replace -s gene.p2n switch.id ${ID}.p2n.fa
+    seqtk rename gene.p2n ${ID}_ >${ID}.p2n
     """
 }
 
