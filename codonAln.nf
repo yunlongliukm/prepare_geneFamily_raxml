@@ -47,6 +47,10 @@ process mergePal2nal {
 }
 
 process raxmlBlock {
+    cpus 10
+    executor 'lsf'
+    queue 'Q88C6T_X1'
+
     input:
     file concat from concatAln
     output:
