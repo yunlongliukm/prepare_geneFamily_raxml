@@ -9,6 +9,15 @@ pep = file(params.pep)
 
 ids = Channel.fromPath('*.id')
 
+
+process faIDX {
+
+    """
+    [ ! -f ${cds}.fai ] && samtools faidx $cds
+    [ ! -f ${pep}.fai ] && samtools faidx $pep
+    """
+}
+
 process codonAln {
     input:
     file geneID from ids
@@ -17,8 +26,8 @@ process codonAln {
     script:
     ID= geneID.getSimpleName()
     """
-    faops order $cds $geneID  gene.cds
-    faops order $pep $geneID  gene.pep
+    samtools faidx $cds \$(cat $geneID) >gene.cds
+    samtools faidx $pep \$(cat $geneID) >gene.pep
     mafft --anysymbol gene.pep > pep.aln
     pal2nal.pl pep.aln gene.cds -output fasta  -nogap -nomismatch >gene.p2n
     cat $geneID |awk '{print \$1"\tseq"NR}' >switch.id
