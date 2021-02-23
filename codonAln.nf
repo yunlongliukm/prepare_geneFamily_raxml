@@ -6,17 +6,18 @@ params.pep = "pep.fasta"
 cds = file(params.cds)
 pep = file(params.pep)
 
-ids = Channel.fromPath('*.id')
+ids = Channel.fromPath('gene*.id')
 
-
+/*
 process faIDX {
-
+    output:
+    ${cds}.fai ${pep}.fai
     """
     [ ! -f ${cds}.fai ] && samtools faidx $cds
     [ ! -f ${pep}.fai ] && samtools faidx $pep
     """
 }
-
+*/
 process codonAln {
     input:
     file geneID from ids
@@ -39,9 +40,9 @@ process mergePal2nal {
     output:
     file "concat.fa" into concatAln
     script:
-    p2nComb = p2n.collect{ "$it" }.join(' ')
-
+    p2nComb = p2n.collect{ "-V $it" }.join(' ')
     """
+    printf $p2nComb
     AMAS.py concat -i $p2nComb -f fasta -d dna -t concat.fa
     """
 }
