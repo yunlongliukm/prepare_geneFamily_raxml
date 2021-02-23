@@ -30,7 +30,7 @@ process codonAln {
     samtools faidx $pep \$(cat $geneID) >gene.pep
     mafft --anysymbol gene.pep > pep.aln
     pal2nal.pl pep.aln gene.cds -output fasta  -nogap -nomismatch >gene.p2n
-    seqtk rename gene.p2n ${ID}_ >${ID}.p2n
+    seqtk rename gene.p2n gene_ >${ID}.p2n
     """
 }
 
