@@ -30,9 +30,8 @@ process codonAln {
     samtools faidx $pep \$(cat $geneID) >gene.pep
     mafft --anysymbol gene.pep > pep.aln
     pal2nal.pl pep.aln gene.cds -output fasta  -nogap -nomismatch >gene.p2n
-    cat $geneID |sed -e 's/\(LOC_Os[0-9]*\)g.*/\1/' -e 's/\(Chr.*_Ol.*\)g.*/\1/' -e 's/\(LG.*_[a-z]*\).*/\1/' -e 's/evm/rhi/' >id.short
-    paste $geneID t >switch.id
-    rm -f t
+    cat $geneID |sed -e 's/\\(LOC_Os[0-9]*\\)g.*/\\1/' -e 's/\\(Chr.*_Ol.*\\)g.*/\\1/' -e 's/\\(LG.*_[a-z]*\\).*/\\1/' -e 's/evm/rhi/' >id.short
+    paste $geneID id.short >switch.id
     python -m jcvi.formats.fasta format gene.p2n ${ID}.p2n --switch=switch.id
     """
 }
