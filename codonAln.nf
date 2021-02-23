@@ -30,7 +30,10 @@ process codonAln {
     samtools faidx $pep \$(cat $geneID) >gene.pep
     mafft --anysymbol gene.pep > pep.aln
     pal2nal.pl pep.aln gene.cds -output fasta  -nogap -nomismatch >gene.p2n
-    seqtk rename gene.p2n gene_ >${ID}.p2n
+    cat $geneID |sed -e 's/\(LOC_Os[0-9]*\)g.*/\1/' -e 's/\(Chr.*_Ol.*\)g.*/\1/' -e 's/\(LG.*_[a-z]*\).*/\1/' -e 's/evm/rhi/' >id.short
+    paste $geneID t >switch.id
+    rm -f t
+    python -m jcvi.formats.fasta format gene.p2n ${ID}.p2n --switch=switch.id
     """
 }
 
@@ -39,12 +42,18 @@ process mergePal2nal {
     file p2n from pal2nal_file.collect()
     output:
     file "concat.fa" into concatAln
-    /*
-    script:
-    p2nComb = p2n.collect{ "-V $it" }.join(' ')
-    */
     """
-    printf $p2n
     AMAS.py concat -i $p2n -f fasta -d dna -t concat.fa
     """
+}
+
+process raxmlBlock {
+    input:
+    file concat from concatAln
+    output:
+    
+    """
+    raxmlHPC-PTHREADS-AVX2 -f a -T 10 -m GTRGAMMA -n tre -s concat.fa -p 54321 -N 200 -x 12345
+    """
+
 }
