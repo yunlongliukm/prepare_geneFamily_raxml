@@ -36,13 +36,15 @@ process codonAln {
 
 process mergePal2nal {
     input:
-    file p2n from pal2nal_file
+    file p2n from pal2nal_file.collect()
     output:
     file "concat.fa" into concatAln
+    /*
     script:
     p2nComb = p2n.collect{ "-V $it" }.join(' ')
+    */
     """
-    printf $p2nComb
-    AMAS.py concat -i $p2nComb -f fasta -d dna -t concat.fa
+    printf $p2n
+    AMAS.py concat -i $p2n -f fasta -d dna -t concat.fa
     """
 }
