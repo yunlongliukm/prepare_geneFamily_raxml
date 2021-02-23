@@ -6,11 +6,6 @@ params.pep = "pep.fasta"
 cds = file(params.cds)
 pep = file(params.pep)
 
-/*
-myDir = file('./raxmlTre')
-myDir.mkdirs()
-*/
-results_path = $PWD/raxmlTre
 
 ids = Channel.fromPath('gene*.id')
 
@@ -59,7 +54,7 @@ process raxmlBlock {
     executor 'lsf'
     queue 'Q88C6T_X1'
 
-    publishDir "$results_path"
+    publishDir './raxml', mode: 'copy', overwrite: false
 
     input:
     file concat from concatAln

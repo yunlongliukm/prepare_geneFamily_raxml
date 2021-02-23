@@ -1,2 +1,2 @@
-rm -rf .nexflow*
+rm -rf .nextflow*
 rm -rf work/
