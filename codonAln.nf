@@ -6,6 +6,12 @@ params.pep = "pep.fasta"
 cds = file(params.cds)
 pep = file(params.pep)
 
+/*
+myDir = file('./raxmlTre')
+myDir.mkdirs()
+*/
+results_path = $PWD/raxmlTre
+
 ids = Channel.fromPath('gene*.id')
 
 /*
@@ -46,17 +52,23 @@ process mergePal2nal {
     """
 }
 
+
+
 process raxmlBlock {
     cpus 10
     executor 'lsf'
     queue 'Q88C6T_X1'
 
+    publishDir "$results_path"
+
     input:
     file concat from concatAln
     output:
-    
+    file "RAxML*" into raxmlTree
     """
     raxmlHPC-PTHREADS-AVX2 -f a -T 10 -m GTRGAMMA -n tre -s concat.fa -p 54321 -N 200 -x 12345
     """
+    
 
 }
+
