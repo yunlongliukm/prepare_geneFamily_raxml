@@ -14,6 +14,7 @@ process codonAln {
     file geneID from ids
     output:
     file "${ID}.p2n"  into pal2nal_file
+    file "${ID}.p2n"  into pal2nal_file_raxmlGene
     script:
     ID= geneID.getSimpleName()
     """
@@ -32,7 +33,7 @@ process raxmlGene {
     publishDir './raxml', mode: 'copy', overwrite: false
 
     input:
-    file p2n from pal2nal_file.filter{ it.size()>0 }
+    file p2n from pal2nal_file_raxmlGene.filter{ it.size()>0 }
     output:
     file "RAxML*" into raxmlGeneTree
     script:
