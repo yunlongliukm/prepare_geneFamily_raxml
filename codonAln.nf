@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
-params.cds = "cds.fasta"
-params.pep = "pep.fasta"
+params.cds = "/ds3200_1/users_root/mapengfei/10bg/perfect_gene_seq/cds.fasta"
+params.pep = "/ds3200_1/users_root/mapengfei/10bg/perfect_gene_seq/pep.fasta"
 
 cds = file(params.cds)
 pep = file(params.pep)
@@ -9,16 +9,6 @@ pep = file(params.pep)
 
 ids = Channel.fromPath('gene*.id')
 
-/*
-process faIDX {
-    output:
-    ${cds}.fai ${pep}.fai
-    """
-    [ ! -f ${cds}.fai ] && samtools faidx $cds
-    [ ! -f ${pep}.fai ] && samtools faidx $pep
-    """
-}
-*/
 process codonAln {
     input:
     file geneID from ids
@@ -34,6 +24,7 @@ process codonAln {
     cat $geneID |sed -e 's/\\(LOC_Os[0-9]*\\)g.*/\\1/' -e 's/\\(Chr.*_Ol.*\\)g.*/\\1/' -e 's/\\(LG.*_[a-z]*\\).*/\\1/' -e 's/evm/rhi/' >id.short
     paste $geneID id.short >switch.id
     python -m jcvi.formats.fasta format gene.p2n ${ID}.p2n --switch=switch.id
+    [ ! -s ${ID}.p2n ] && rm -f ${ID}.p2n
     """
 }
 
