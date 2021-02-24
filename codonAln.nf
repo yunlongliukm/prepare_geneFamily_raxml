@@ -24,13 +24,12 @@ process codonAln {
     cat $geneID |sed -e 's/\\(LOC_Os[0-9]*\\)g.*/\\1/' -e 's/\\(Chr.*_Ol.*\\)g.*/\\1/' -e 's/\\(LG.*_[a-z]*\\).*/\\1/' -e 's/evm/rhi/' >id.short
     paste $geneID id.short >switch.id
     python -m jcvi.formats.fasta format gene.p2n ${ID}.p2n --switch=switch.id
-    [ ! -s ${ID}.p2n ] && rm -f ${ID}.p2n
     """
 }
 
 process mergePal2nal {
     input:
-    file p2n from pal2nal_file.collect()
+    file p2n from pal2nal_file.filter{ it.size()>0 }.collect()
     output:
     file "concat.fa" into concatAln
     """
