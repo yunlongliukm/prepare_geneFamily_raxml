@@ -29,6 +29,9 @@ process codonAln {
 }
 
 process raxmlGene {
+    cpus 1
+    executor 'lsf'
+    queue 'Q88C6T_X1'
     
     publishDir './raxml', mode: 'copy', overwrite: false
 
@@ -39,7 +42,7 @@ process raxmlGene {
     script:
     gID= p2n.getSimpleName()
     """
-    raxmlHPC-PTHREADS-AVX2 -f a  -m GTRGAMMA -n ${gID}.tre -s $p2n -p 54321 -N 200 -x 12345
+    raxmlHPC-PTHREADS-AVX2 -f a  -m GTRGAMMA -n $gID -s $p2n -p 54321 -N 200 -x 12345
     """
 }
 
