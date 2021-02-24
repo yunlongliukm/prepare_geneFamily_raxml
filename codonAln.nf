@@ -27,6 +27,21 @@ process codonAln {
     """
 }
 
+process raxmlGene {
+    
+    publishDir './raxml', mode: 'copy', overwrite: false
+
+    input:
+    file p2n from pal2nal_file.filter{ it.size()>0 }
+    output:
+    file "RAxML*" into raxmlGeneTree
+    script:
+    gID= p2n.getSimpleName()
+    """
+    raxmlHPC-PTHREADS-AVX2 -f a -T 10 -m GTRGAMMA -n ${gID}.tre -s $p2n -p 54321 -N 200 -x 12345
+    """
+}
+
 process mergePal2nal {
     input:
     file p2n from pal2nal_file.filter{ it.size()>0 }.collect()
