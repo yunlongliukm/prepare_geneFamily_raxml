@@ -33,7 +33,7 @@ process raxmlGene {
     executor 'lsf'
     queue 'Q88C6T_X1'
     
-    publishDir './raxml', mode: 'copy', overwrite: false
+    publishDir './raxml/gene', mode: 'copy', overwrite: false
 
     input:
     file p2n from pal2nal_file_raxmlGene.filter{ it.size()>1024 }
@@ -42,7 +42,7 @@ process raxmlGene {
     script:
     gID= p2n.getSimpleName()
     """
-    raxmlHPC-PTHREADS-AVX2 -f a -T 2 -m GTRGAMMA -n $gID -s $p2n -p 54321 -N 200 -x 12345
+    raxmlHPC-PTHREADS-AVX2 -f a -T 2 -m GTRGAMMA -n ${gID}.tre -s $p2n -p 54321 -N 200 -x 12345
     """
 }
 
@@ -70,7 +70,7 @@ process raxmlBlock {
     output:
     file "RAxML*" into raxmlTree
     """
-    raxmlHPC-PTHREADS-AVX2 -f a -T 10 -m GTRGAMMA -n tre -s concat.fa -p 54321 -N 200 -x 12345
+    raxmlHPC-PTHREADS-AVX2 -f a -T 10 -m GTRGAMMA -n concat.tre -s concat.fa -p 54321 -N 200 -x 12345
     """
     
 
