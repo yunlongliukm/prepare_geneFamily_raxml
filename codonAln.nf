@@ -48,7 +48,7 @@ process raxmlGene {
 
 process mergePal2nal {
     input:
-    file p2n from pal2nal_file.filter{ it.size()>0 }.collect()
+    file p2n from pal2nal_file.filter{ it.size()>1024 }.collect()
     output:
     file "concat.fa" into concatAln
     """
